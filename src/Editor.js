@@ -1,6 +1,8 @@
 import { Button, Grid } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import React, { useEffect, useRef, useState } from 'react';
+import PerfectScrollbar from "react-perfect-scrollbar";
+import "react-perfect-scrollbar/dist/css/styles.css";
 export default function Editor(props) {
     const [lineNo, setLineNo] = useState(1);
     const divref = useRef(null);
@@ -25,7 +27,7 @@ export default function Editor(props) {
     }, [])
     const handleKeyUp = (e) => {
 
-      
+
         if (e.keyCode === 8) {
             if (divref.current.textContent.length === 0) {
                 var sel = window.getSelection();
@@ -97,7 +99,7 @@ export default function Editor(props) {
             var sel = window.getSelection();
             var range = sel.getRangeAt(0);
             let div = getParentDiv(range.startContainer);
-            if(range.collapsed && range.startOffset===0 &&  divref.current.firstChild === div){
+            if (range.collapsed && range.startOffset === 0 && divref.current.firstChild === div) {
                 e.preventDefault();
                 return;
             }
@@ -106,7 +108,7 @@ export default function Editor(props) {
             if (range.collapsed) {
 
                 len = divref.current.children.length - 1;
-               
+
             }
             else {
                 let e = getLineNo(range.endContainer);
@@ -114,24 +116,24 @@ export default function Editor(props) {
                 len = divref.current.children.length - (e - s);
 
             }
-            
 
 
-            if (len > 0 && (div.textContent.length === 0 || (range.startOffset == 0 ) || !range.collapsed)) {
-              
 
-                    if (lineNo > len) {
-                        for (let i = lineNo; i > len; i--) {
-                            let child = numberRef.current.children;
-                            numberRef.current.removeChild(child[i - 1]);
-                        }
-    
-    
-    
-                        setLineNo(len);
+            if (len > 0 && (div.textContent.length === 0 || (range.startOffset == 0) || !range.collapsed)) {
+
+
+                if (lineNo > len) {
+                    for (let i = lineNo; i > len; i--) {
+                        let child = numberRef.current.children;
+                        numberRef.current.removeChild(child[i - 1]);
                     }
+
+
+
+                    setLineNo(len);
                 }
-            
+            }
+
 
         }
 
@@ -356,35 +358,49 @@ export default function Editor(props) {
     return (
 
         <React.Fragment>
-            <Grid container style={{ width: '100%', height: '80vh', borderRadius: '10px' }} justify="center" alignItems="center" >
 
-                <Grid item container xs={1} justify="flex-end"   >
-                    <Grid item xs={7} style={{ height: '7vh', backgroundColor: '#564543' }}>
+            <Grid container style={{ width: '100%', height: '76vh', borderRadius: '10px' }} justify="center" alignItems="center" >
 
-                    </Grid>
-                    <Grid item xs={7}>
 
-                        <div ref={numberRef} id="number-line" style={{ marginLeft: 'auto', backgroundColor: '#564543', height: '70vh', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace' }}>
+                <Grid item container xs={1} justify="flex-end">
+                    <Grid item xs={6}>
+                        <div style={{ backgroundColor: '#564543', height: '6vh' }}>
+
                         </div>
                     </Grid>
-
-
-
                 </Grid>
-                <Grid item container xs={11} >
-                    <Grid item container xs={12} style={{ height: '7vh', backgroundColor: '#564543' }} justify="flex-end" alignItems="center" >
-                        <Grid item>
+                <Grid item xs={11}>
 
-                            <Button variant="contained" style={{ backgroundColor: "#e69500", textTransform: 'capitalize', marginRight: '10px' }} onClick={props.runCode}> Run Code</Button>
+                    <div style={{ backgroundColor: '#564543', height: '6vh', textAlign: 'right' }}>
+
+                        <Button variant="contained" style={{ backgroundColor: "#e69500", textTransform: 'capitalize', marginRight: '10px', fontSize: '12px', marginTop: '2px' }} onClick={props.runCode}> Run Code</Button>
+                    </div>
+                </Grid>
+
+                <Grid item xs={12} container >
+
+                    <div style={{ maxHeight: '70vh', width: '100%', overflow: 'auto', maxWidth: '100%' }}>
+                        <PerfectScrollbar>
+
+                       
+                        <Grid container >
+
+                            <Grid item container xs={1} justify="flex-end" >
+                                <Grid item xs={6}>
+
+                                    <div ref={numberRef} id="number-line" style={{ marginLeft: 'auto', backgroundColor: '#564543', minHeight: '70vh', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace' }}>
+                                    </div>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={11}>
+                                <div ref={divref} onContextMenu={(e) => { e.preventDefault() }} onInput={handleChange} style={{
+                                    backgroundColor: "#2F2625", border: 'none', outline: 'none', color: 'white', textAlign: 'left', wordWrap: 'none', overflowX: 'auto', width: '100%', minHeight: '70vh', whiteSpace: 'nowrap', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace',
+                                }} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} autoComplete="off" spellCheck="false" autoCorrect="off" data-gramm_editor="false" contentEditable="true">
+                                </div>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-
-                        <div ref={divref} onContextMenu={(e) => { e.preventDefault() }} onInput={handleChange} style={{
-                            backgroundColor: "#2F2625", border: 'none', outline: 'none', color: 'white', textAlign: 'left', wordWrap: 'none', overflowX: 'auto', overflowY: 'auto', width: '100%', maxWidth: '100%', height: '70vh', whiteSpace: 'nowrap', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace',
-                        }} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} autoComplete="off" spellCheck="false" autoCorrect="off" data-gramm_editor="false" contentEditable="true">
-                        </div>
-                    </Grid>
+                        </PerfectScrollbar>
+                    </div>
                 </Grid>
             </Grid>
 
