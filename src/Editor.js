@@ -3,7 +3,6 @@ import { grey } from '@material-ui/core/colors';
 import React, { useEffect, useRef, useState } from 'react';
 export default function Editor(props) {
     const [lineNo, setLineNo] = useState(1);
-    //  let lineNo = 1;
     const divref = useRef(null);
     const handleChange = (e) => {
         let code = "";
@@ -21,15 +20,49 @@ export default function Editor(props) {
 
         document.execCommand("defaultParagraphSeparator", false, "div");
 
-
-
         divref.current.innerHTML = '<div><span>&nbsp;</span></div>';
         numberRef.current.innerHTML = `<div style="color:white;textAlign:center;fontSize:0.9em;">1</div>`
     }, [])
     const handleKeyUp = (e) => {
 
+      
+        if (e.keyCode === 8) {
+            if (divref.current.textContent.length === 0) {
+                var sel = window.getSelection();
+                var range = sel.getRangeAt(0);
+                var currentCaretPosition = getCaretPosition(divref.current);
+                divref.current.innerHTML = '<div><span>&nbsp;</span></div>';
+                numberRef.current.innerHTML = `<div style="color:white;textAlign:center;fontSize:0.9em">1</div>`
+                var data = getCaretData(divref.current, currentCaretPosition);
+                setCaretPosition(data);
+            }
+        }
+
+
+    }
+
+    const getParentDiv = (node) => {
+        if (node.localName === 'div') return node;
+        while (node.parentElement.localName !== 'div') {
+            node = node.parentElement
+        }
+        return node.parentElement;
+    }
+    const getLineNo = (node) => {
+        let children = divref.current.children;
+        let parentNode = getParentDiv(node);
+        for (let i = 0; i < children.length; i++) {
+            if (children[i] == parentNode) {
+                return i + 1;
+            }
+        }
+        return 0;
+    }
+    const handleKeyDown = (e) => {
+
         if (e.keyCode == 13) {
-            let len = e.target.children.length;
+
+            let len = divref.current.children.length + 1;
             if (lineNo < len) {
 
 
@@ -43,46 +76,129 @@ export default function Editor(props) {
             }
             var sel = window.getSelection();
             var range = sel.getRangeAt(0);
-            var span = document.createElement('span');
-            var tabNode = document.createTextNode("");
-            span.style.color = "white";
-            span.appendChild(tabNode)
 
+
+            var currentCaretPosition = getCaretPosition(divref.current);
+
+            let node = getParentDiv(range.endContainer);
+            if (node.textContent.trim().length > 0 && range.startOffset !== 0) {
+                node.innerHTML = colorWords(node.textContent);
+                var data = getCaretData(divref.current, currentCaretPosition);
+                setCaretPosition(data);
+            }
+
+
+
+
+
+
+        }
+        else if (e.keyCode === 8) {
+            var sel = window.getSelection();
+            var range = sel.getRangeAt(0);
+            let div = getParentDiv(range.startContainer);
+            if(range.collapsed && range.startOffset===0 &&  divref.current.firstChild === div){
+                e.preventDefault();
+                return;
+            }
+            let len;
+            let flag = 0;
+            if (range.collapsed) {
+
+                len = divref.current.children.length - 1;
+               
+            }
+            else {
+                let e = getLineNo(range.endContainer);
+                let s = getLineNo(range.startContainer);
+                len = divref.current.children.length - (e - s);
+
+            }
+            
+
+
+            if (len > 0 && (div.textContent.length === 0 || (range.startOffset == 0 ) || !range.collapsed)) {
+              
+
+                    if (lineNo > len) {
+                        for (let i = lineNo; i > len; i--) {
+                            let child = numberRef.current.children;
+                            numberRef.current.removeChild(child[i - 1]);
+                        }
+    
+    
+    
+                        setLineNo(len);
+                    }
+                }
+            
+
+        }
+
+        else if (e.keyCode === 9) {
+            e.preventDefault();
+
+            var sel = window.getSelection();
+            var range = sel.getRangeAt(0);
+            var span = document.createElement('span');
+            var tabNode = document.createTextNode("\u00a0\u00a0\u00a0\u00a0");
+            span.appendChild(tabNode);
             range.insertNode(span);
 
             range.setStartAfter(tabNode);
             range.setEndAfter(tabNode);
             sel.removeAllRanges();
             sel.addRange(range);
+            sel = window.getSelection();
+            range = sel.getRangeAt(0);
+            var currentCaretPosition = getCaretPosition(divref.current);
 
+
+            let node = (getParentDiv(range.endContainer));
+            node.innerHTML = colorWords(node.textContent);
+            var data = getCaretData(divref.current, currentCaretPosition);
+
+            setCaretPosition(data);
         }
-        else if (e.keyCode === 8) {
-            let len = divref.current.children.length;
+        else if (e.keyCode === 32) {
+            e.preventDefault();
+            var sel = window.getSelection();
 
-            if (len > 0 && divref.current.innerHTML.trim() !== "<br>") {
+            var range = sel.getRangeAt(0);
+            var span = document.createElement('span');
+            var tabNode = document.createTextNode("\u00a0");
+            span.appendChild(tabNode);
+            range.insertNode(span);
 
-                if (lineNo > len) {
-                    for (let i = lineNo; i > len; i--) {
-                        let child = numberRef.current.children;
-                        numberRef.current.removeChild(child[i - 1]);
-                    }
+            range.setStartAfter(tabNode);
+            range.setEndAfter(tabNode);
+            sel.removeAllRanges();
+            sel.addRange(range);
+            sel = window.getSelection();
+            range = sel.getRangeAt(0);
+            var currentCaretPosition = getCaretPosition(divref.current);
+            let node = (getParentDiv(range.endContainer));
 
-                    setLineNo(len);
-                }
-            }
-            else {
-                var sel = window.getSelection();
-                var range = sel.getRangeAt(0);
-                var currentCaretPosition = getCaretPosition(divref.current);
-                divref.current.innerHTML = '<div><span>&nbsp;</span></div>';
-                numberRef.current.innerHTML = `<div style="color:white;textAlign:center;fontSize:0.9em">1</div>`
-                var data = getCaretData(divref.current, currentCaretPosition);
-                setCaretPosition(data);
-                setLineNo(len);
+            node.innerHTML = colorWords(node.textContent);
 
-            }
+            var data = getCaretData(divref.current, currentCaretPosition);
+
+            setCaretPosition(data);
+
         }
         else if (e.keyCode == 90 && e.ctrlKey) {
+            e.preventDefault();
+        }
+
+        else if (e.keyCode === 86 && e.ctrlKey) {
+            e.preventDefault();
+
+        }
+        else if (e.keyCode === 88 && e.ctrlKey) {
+            e.preventDefault();
+
+        }
+        if (e.keyCode == 90 && e.ctrlKey) {
             e.preventDefault();
 
 
@@ -158,111 +274,6 @@ export default function Editor(props) {
             range = sel.getRangeAt(0);
         }
 
-
-    }
-    const getCaretLineNo = () => {
-        var sel = window.getSelection();
-        var range = sel.getRangeAt(0);
-    }
-    const getParentDiv = (node) => {
-        while (node.parentElement.localName !== 'div') {
-            node = node.parentElement
-        }
-        return node.parentElement;
-    }
-    const handleKeyDown = (e) => {
-        if (e.keyCode === 9) {
-            e.preventDefault();
-
-            var sel = window.getSelection();
-            var range = sel.getRangeAt(0);
-            var span = document.createElement('span');
-            var tabNode = document.createTextNode("\u00a0\u00a0\u00a0\u00a0");
-            span.appendChild(tabNode);
-            range.insertNode(span);
-
-            range.setStartAfter(tabNode);
-            range.setEndAfter(tabNode);
-            sel.removeAllRanges();
-            sel.addRange(range);
-            sel = window.getSelection();
-            range = sel.getRangeAt(0);
-            var currentCaretPosition = getCaretPosition(divref.current);
-
-
-            // range.endContainer.parentNode.innerHTML = colorWords(range.endContainer.parentNode.textContent);
-            let node = (getParentDiv(range.endContainer));
-            node.innerHTML = colorWords(node.textContent);
-            var data = getCaretData(divref.current, currentCaretPosition);
-
-            setCaretPosition(data);
-        }
-        else if (e.keyCode === 32) {
-            e.preventDefault();
-            var sel = window.getSelection();
-
-            var range = sel.getRangeAt(0);
-            var span = document.createElement('span');
-            var tabNode = document.createTextNode("\u00a0");
-            span.appendChild(tabNode);
-            range.insertNode(span);
-
-            range.setStartAfter(tabNode);
-            range.setEndAfter(tabNode);
-            sel.removeAllRanges();
-            sel.addRange(range);
-            sel = window.getSelection();
-            range = sel.getRangeAt(0);
-            var currentCaretPosition = getCaretPosition(divref.current);
-            let node = (getParentDiv(range.endContainer));
-            node.innerHTML = colorWords(node.textContent);
-
-            var data = getCaretData(divref.current, currentCaretPosition);
-
-            setCaretPosition(data);
-
-        }
-        else if (e.keyCode == 90 && e.ctrlKey) {
-            e.preventDefault();
-        }
-        else if (e.keyCode === 13) {
-
-            // e.preventDefault();
-            var sel = window.getSelection();
-
-            var range = sel.getRangeAt(0);
-            console.log(range);
-            var currentCaretPosition = getCaretPosition(divref.current);
-            // if(range.endContainer.parentNode.textContent.trim().length>0){
-            //     range.endContainer.parentNode.innerHTML = colorWords(range.endContainer.parentNode.textContent);
-
-            //     var data = getCaretData(divref.current, currentCaretPosition);
-            //     setCaretPosition(data);
-            // }
-            let node = getParentDiv(range.endContainer);
-            if (node.textContent.trim().length > 0) {
-                node.innerHTML = colorWords(node.textContent);
-                var data = getCaretData(divref.current, currentCaretPosition);
-                setCaretPosition(data);
-            }
-
-
-        }
-        else if (e.keyCode === 86 && e.ctrlKey) {
-            e.preventDefault();
-            // var currentCaretPosition = getCaretPosition(divref.current);
-            // var data = getCaretData(divref.current, currentCaretPosition);
-
-            // setCaretPosition(data);   
-        }
-        else if (e.keyCode === 88 && e.ctrlKey) {
-            e.preventDefault();
-            // var currentCaretPosition = getCaretPosition(divref.current);
-            // var data = getCaretData(divref.current, currentCaretPosition);
-
-            // setCaretPosition(data);   
-        }
-
     }
 
     function getCaretPosition(el) {
@@ -297,10 +308,7 @@ export default function Editor(props) {
         // you'll need the node and the position (offset) to set the caret
         return { node: node, position: position };
     }
-    // assume "component" is DOM element
-    // you may need to modify currentCaretPosition, see "Little Details"    section below
 
-    // setting the caret with this info  is also standard
     function setCaretPosition(d) {
         var sel = window.getSelection(),
             range = document.createRange();
@@ -356,7 +364,7 @@ export default function Editor(props) {
                     </Grid>
                     <Grid item xs={7}>
 
-                        <div ref={numberRef} id="number-line" style={{ marginLeft: 'auto', backgroundColor: '#564543', height: '70vh',fontFamily:'sans-serif' }}>
+                        <div ref={numberRef} id="number-line" style={{ marginLeft: 'auto', backgroundColor: '#564543', height: '70vh', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace' }}>
                         </div>
                     </Grid>
 
@@ -373,7 +381,7 @@ export default function Editor(props) {
                     <Grid item xs={12}>
 
                         <div ref={divref} onContextMenu={(e) => { e.preventDefault() }} onInput={handleChange} style={{
-                            backgroundColor: "#2F2625", border: 'none', outline: 'none', color: 'white', textAlign: 'left', wordWrap: 'none', overflowX: 'auto', overflowY: 'auto', width: '100%', height: '70vh', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace',
+                            backgroundColor: "#2F2625", border: 'none', outline: 'none', color: 'white', textAlign: 'left', wordWrap: 'none', overflowX: 'auto', overflowY: 'auto', width: '100%', maxWidth: '100%', height: '70vh', whiteSpace: 'nowrap', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace',
                         }} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} autoComplete="off" spellCheck="false" autoCorrect="off" data-gramm_editor="false" contentEditable="true">
                         </div>
                     </Grid>

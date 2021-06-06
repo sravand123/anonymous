@@ -36,7 +36,7 @@ export default function NavBar(){
         <div style={{marginLeft:'auto', display:'flex',justifyContent:'space-around'}}>
            <a className={classes.link} onClick={()=>{history.push('/about')}} >About</a>
            <a className={classes.link} onClick={()=>{history.push('/demo')}} >Demo</a>
-           <a className={classes.link} >Github</a>
+           <a className={classes.link} href="https://github.com/sravand123/anonymous"  >Github</a>
         </div>
        </div>
     )
