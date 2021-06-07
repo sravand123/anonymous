@@ -39,7 +39,7 @@ export default class Home extends React.Component {
         const log = console.log.bind(console)
         console.log = (...args) => {
             for (let i = 0; i < args.length; i++) {
-                if (args[i].type === 'output') {
+                if (args[i] && args[i].type === 'output') {
                     this.logs = [...this.logs, args[i].value];
                     this.setState({ output: this.logs });
                     // this.lRef.current.innerHTML += `

@@ -17,7 +17,6 @@ export default function Editor(props) {
         props.setCode(code);
     }
     const numberRef = useRef(null);
-    const pos = 1;
     useEffect(() => {
 
         document.execCommand("defaultParagraphSeparator", false, "div");
@@ -81,9 +80,9 @@ export default function Editor(props) {
 
 
             var currentCaretPosition = getCaretPosition(divref.current);
-
             let node = getParentDiv(range.endContainer);
-            if (node.textContent.trim().length > 0 && range.startOffset !== 0) {
+            var pos =  getCaretPosition(node)
+            if (node.textContent.trim().length > 0 && pos !== 0) {
                 node.innerHTML = colorWords(node.textContent);
                 var data = getCaretData(divref.current, currentCaretPosition);
                 setCaretPosition(data);
@@ -95,11 +94,24 @@ export default function Editor(props) {
 
 
         }
+        else if(e.keyCode===65 && e.ctrlKey){
+            e.preventDefault();
+            var sel = window.getSelection();
+            var range = sel.getRangeAt(0);
+            range.setStart(divref.current.firstChild,0);
+            range.setEnd(divref.current.lastChild,divref.current.lastChild.children.length);
+            sel.removeAllRanges();
+            sel.addRange(range);
+            console.log(range.startContainer);
+            console.log(range.endContainer);
+
+        }
         else if (e.keyCode === 8) {
             var sel = window.getSelection();
             var range = sel.getRangeAt(0);
             let div = getParentDiv(range.startContainer);
-            if (range.collapsed && range.startOffset === 0 && divref.current.firstChild === div) {
+            let pos = getCaretPosition(div);
+            if (range.collapsed && pos === 0 && divref.current.firstChild === div) {
                 e.preventDefault();
                 return;
             }
@@ -111,17 +123,19 @@ export default function Editor(props) {
 
             }
             else {
+                console.log(range.endContainer);
+                console.log(range.startContainer);
                 let e = getLineNo(range.endContainer);
                 let s = getLineNo(range.startContainer);
                 len = divref.current.children.length - (e - s);
 
             }
-
-
-
-            if (len > 0 && (div.textContent.length === 0 || (range.startOffset == 0) || !range.collapsed)) {
-
-
+             pos = (getCaretPosition(div));
+            console.log("collaped",range.collapsed);
+            console.log("len: " , len , "lineno",lineNo);
+            console.log(pos);
+            if (len > 0 && (div.textContent.length === 0 || (pos == 0) || !range.collapsed)) {
+                
                 if (lineNo > len) {
                     for (let i = lineNo; i > len; i--) {
                         let child = numberRef.current.children;
@@ -131,6 +145,7 @@ export default function Editor(props) {
 
 
                     setLineNo(len);
+                    
                 }
             }
 
