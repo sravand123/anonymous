@@ -27,11 +27,16 @@ export default class Home extends React.Component {
       `
         try {
             let c = (generator(parser.parse(this.state.code)))
-            console.log(c.code);
-            new Function(logFun + c.code)();
+            try{
+
+                new Function(logFun + c.code)();
+            }
+            catch(err){
+                console.log({type:'output',value:"Error"});
+            }
         }
         catch (err) {
-            console.log("error");
+            console.log({type:'output',value:"Syntax Error"});
         }
     }
    
@@ -73,7 +78,7 @@ export default class Home extends React.Component {
 
                         <div style={{ backgroundColor: grey[100], height: '77vh', width: '100%', maxHeight: '80vh', overflowY: 'auto', textAlign: 'left' }} ref={this.lRef}>
                             {this.state.output.map((el, index) => {
-                                return <div style={{ color: 'grey' }}><span style={{ marginLeft: '10px' }}>{el}</span><hr /></div>
+                                return <div style={{ color: 'grey' }}><span style={{ marginLeft: '10px' }}>{el}</span></div>
                             })}
                         </div>
                     </Grid>

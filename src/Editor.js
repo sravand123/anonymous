@@ -116,7 +116,6 @@ export default function Editor(props) {
                 return;
             }
             let len;
-            let flag = 0;
             if (range.collapsed) {
 
                 len = divref.current.children.length - 1;
