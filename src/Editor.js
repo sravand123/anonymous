@@ -402,12 +402,12 @@ export default function Editor(props) {
                             <Grid item container xs={1} justify="flex-end" >
                                 <Grid item xs={6}>
 
-                                    <div ref={numberRef} id="number-line" style={{ marginLeft: 'auto', backgroundColor: '#564543', minHeight: '70vh', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace' }}>
+                                    <div ref={numberRef} id="number-line" style={{ marginLeft: 'auto',textAlign:'center', backgroundColor: '#564543', minHeight: '70vh', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace' }}>
                                     </div>
                                 </Grid>
                             </Grid>
                             <Grid item xs={11}>
-                                <div ref={divref} onContextMenu={(e) => { e.preventDefault() }} onInput={handleChange} style={{
+                                <div id="editor" ref={divref} onContextMenu={(e) => { e.preventDefault() }} onInput={handleChange} style={{
                                     backgroundColor: "#2F2625", border: 'none', outline: 'none', color: 'white', textAlign: 'left', wordWrap: 'none', overflowX: 'auto', width: '100%', minHeight: '70vh', whiteSpace: 'nowrap', fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, Courier New,monospace',
                                 }} onKeyUp={handleKeyUp} onKeyDown={handleKeyDown} autoComplete="off" spellCheck="false" autoCorrect="off" data-gramm_editor="false" contentEditable="true">
                                 </div>

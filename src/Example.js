@@ -69,6 +69,10 @@ export default function Example(props) {
                 value:x
             })
         }\n
+        let read = (x) =>{
+             let value=  window.prompt(x,'')
+             return value;
+        }\n
       `
         try {
             let c = (generator(parser.parse(code)))

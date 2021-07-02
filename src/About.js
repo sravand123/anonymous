@@ -26,7 +26,7 @@ export default function About() {
                     <p style={{ fontFamily: 'Poppins' }}>
                         Anonymous is a fully functional, programming language which transpiles to javascript .
                         This language partially belongs to functional programming paradigm.
-                        This language is inspired from a language called Tiger.
+                        This language is inspired from a programming language called Tiger.
                     </p>
                 </Grid>
                 <Grid item xs={7}>
@@ -68,7 +68,7 @@ export default function About() {
   
   in
     
-    x:= window.prompt("Enter x","");
+    x:= read("Enter a Value");
     log(x)
   
   end    

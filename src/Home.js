@@ -24,6 +24,10 @@ export default class Home extends React.Component {
                 value:x
             })
         }\n
+        let read = (x) =>{
+            let value=  window.prompt(x,'')
+            return value;
+       }\n
       `
         try {
             let c = (generator(parser.parse(this.state.code)))
@@ -47,13 +51,7 @@ export default class Home extends React.Component {
                 if (args[i] && args[i].type === 'output') {
                     this.logs = [...this.logs, args[i].value];
                     this.setState({ output: this.logs });
-                    // this.lRef.current.innerHTML += `
-                    //                                 <div style="color:'grey;" >
-                    //                                 <span style='margin-left:10px; font-family:source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-                    //                                 monospace;font-size:0.5em;'>${args[i].value}</span></div>
-                    //                                 <hr/>
-                    //                                 `
-                }
+                 }
             }
             log(...args)
         }
