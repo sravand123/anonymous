@@ -25,7 +25,6 @@ export default function About() {
                     <h3>What is Anonymous?</h3>
                     <p style={{ fontFamily: 'Poppins' }}>
                         Anonymous is a fully functional, programming language which transpiles to javascript .
-                        This language partially belongs to functional programming paradigm.
                         This language is inspired from a programming language called Tiger.
                     </p>
                 </Grid>
