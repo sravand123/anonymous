@@ -4,7 +4,7 @@ import Editor from './Editor';
 import generator from '@babel/generator';
 import ConsoleLogHTML from 'console-log-html';
 import { grey } from '@material-ui/core/colors';
-const parser = require('./tiger');
+import parser from './tiger'
 export default class Home extends React.Component {
     state = {
         code: "",

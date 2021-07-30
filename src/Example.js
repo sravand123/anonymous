@@ -4,7 +4,7 @@ import generator from '@babel/generator';
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
 
-const parser = require('./tiger');
+import parser from './tiger'
 
 export default function Example(props) {
     const [output, setOutput] = useState([]);
