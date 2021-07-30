@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import generator from '@babel/generator';
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
+import  {tiger} from './tiger';
+//const parser = require('./tiger').parser;
 
-import parser from './tiger'
 
 export default function Example(props) {
     const [output, setOutput] = useState([]);
@@ -75,7 +76,7 @@ export default function Example(props) {
         }\n
       `
         try {
-            let c = (generator(parser.parse(code)))
+            let c = (generator(tiger.parse(code)))
             console.log(c.code);
             new Function(logFun + c.code)();
         }

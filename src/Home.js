@@ -4,7 +4,8 @@ import Editor from './Editor';
 import generator from '@babel/generator';
 import ConsoleLogHTML from 'console-log-html';
 import { grey } from '@material-ui/core/colors';
-import parser from './tiger'
+import {tiger} from './tiger';
+//const parser = require('./tiger');
 export default class Home extends React.Component {
     state = {
         code: "",
@@ -30,7 +31,7 @@ export default class Home extends React.Component {
        }\n
       `
         try {
-            let c = (generator(parser.parse(this.state.code)))
+            let c = (generator(tiger.parse(this.state.code)))
             try{
 
                 new Function(logFun + c.code)();
